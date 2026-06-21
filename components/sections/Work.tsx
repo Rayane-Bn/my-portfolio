@@ -207,7 +207,7 @@ export function Work() {
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                className="group relative aspect-[4/3] w-[85%] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-[var(--color-surface)] transition-all duration-400 ease-out sm:w-[68%] lg:w-[calc(33.333%-1rem)]"
+                className="group relative aspect-[4/3] w-[85%] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-[var(--color-surface)] transition-all duration-400 ease-out sm:w-[68%] lg:w-[60vw]"
                 style={{ opacity: i === active ? 1 : 0.5, transform: i === active ? "scale(1)" : "scale(0.94)" }}
               >
                 {p.example && (
