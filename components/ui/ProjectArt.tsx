@@ -1,18 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { TbArrowUpRight } from "react-icons/tb";
-
-export type ProjectVariant = "schema" | "boutique" | "landing";
-
-export type Project = {
-  title: string;
-  description: string;
-  tags: string[];
-  variant: ProjectVariant;
-  href?: string;
-  example?: boolean;
-};
+import type { ProjectVariant } from "@/types/project";
 
 function SchemaArt() {
   return (
@@ -72,60 +58,8 @@ const ART: Record<ProjectVariant, () => React.ReactElement> = {
   landing: LandingArt,
 };
 
-export function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const Art = ART[project.variant];
-
-  const card = (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 1, 0.5, 1] }}
-      whileHover={{ y: -8, scale: 1.015 }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-transparent bg-[var(--color-surface)] transition-colors duration-300 hover:border-[var(--color-accent)]"
-    >
-      {project.example && (
-        <span className="absolute top-4 right-4 z-10 rounded-full border border-[var(--color-line)] bg-[var(--color-bg)]/90 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest text-[var(--color-muted)] uppercase">
-          Example — concept
-        </span>
-      )}
-
-      <div className="flex aspect-[4/3] items-center justify-center bg-[var(--color-bg)] p-10 text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
-        <Art />
-      </div>
-
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight">
-          {project.title}
-        </h3>
-        <p className="mt-2 flex-1 text-sm text-[var(--color-muted)]">
-          {project.description}
-        </p>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-[var(--color-line)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] text-[var(--color-muted)]"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[var(--color-ink)] transition-all duration-300 group-hover:gap-2 group-hover:text-[var(--color-accent)]">
-          View project
-          <TbArrowUpRight className="h-4 w-4" aria-hidden />
-        </span>
-      </div>
-    </motion.article>
-  );
-
-  if (!project.href) return card;
-
-  return (
-    <a href={project.href} className="block h-full" target="_blank" rel="noreferrer">
-      {card}
-    </a>
-  );
+/** Abstract line-art placeholder, used until a project has a real screenshot. */
+export function ProjectArt({ variant }: { variant: ProjectVariant }) {
+  const Art = ART[variant];
+  return <Art />;
 }

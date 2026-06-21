@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import {
   SiHtml5,
   SiCss,
@@ -19,6 +20,7 @@ import {
 } from "react-icons/si";
 import { TbDatabase } from "react-icons/tb";
 import type { IconType } from "react-icons";
+import { useMarquee } from "@/lib/useMarquee";
 
 type Tool = { name: string; icon: IconType; brand: string };
 
@@ -47,15 +49,24 @@ const ROW_2: Tool[] = [
   { name: "npm", icon: SiNpm, brand: "#CB3837" },
 ];
 
+// 4 copies — a generous buffer so the loop never runs out of content,
+// even on an ultra-wide screen. See lib/useMarquee.ts for why.
+const COPIES = 4;
+
 function Row({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
-  const loop = [...tools, ...tools];
+  const loop = Array.from({ length: COPIES }, () => tools).flat();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false);
+
+  useMarquee(trackRef, { speed: reverse ? -60 : 60, paused, copies: COPIES });
+
   return (
-    <div className="marquee-row marquee-fade overflow-hidden">
-      <div
-        className={`marquee-track flex w-max gap-10 py-3 ${
-          reverse ? "marquee-track--reverse" : ""
-        }`}
-      >
+    <div
+      className="marquee-fade overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div ref={trackRef} className="flex w-max gap-10 py-3 will-change-transform">
         {loop.map(({ name, icon: Icon, brand }, i) => (
           <div
             key={`${name}-${i}`}
@@ -79,7 +90,7 @@ function Row({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
 export function Skills() {
   return (
     <section id="skills" className="py-28">
-      <div className="mx-auto max-w-3xl px-6">
+      <div className="mx-auto max-w-6xl px-6">
         <p className="mb-3 font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-muted)] uppercase">
           02 — Skills
         </p>

@@ -59,7 +59,7 @@ export function Hero() {
             alt="Portrait of Rayane Benkradidja"
             fill
             priority
-            sizes="(min-width: 768px) 416px, 288px"
+            sizes="(min-width: 768px) 512px, 320px"
             className="object-contain"
           />
         </motion.div>

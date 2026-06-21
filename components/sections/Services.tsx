@@ -30,7 +30,7 @@ const SERVICES = [
  */
 export function Services() {
   return (
-    <section id="services" className="mx-auto max-w-3xl px-6 py-28">
+    <section id="services" className="mx-auto max-w-6xl px-6 py-28">
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
