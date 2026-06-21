@@ -113,7 +113,7 @@ export function Work() {
     <section
       id="work"
       ref={sectionRef}
-      className="mx-auto max-w-6xl px-6 py-28"
+      className="mx-auto max-w-6xl px-8 py-28"
     >
       <motion.p
         initial={{ opacity: 0, y: 8 }}
@@ -135,101 +135,103 @@ export function Work() {
         Selected work
       </motion.h2>
 
-      <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(220px,1fr)_2fr] lg:items-start lg:gap-12">
+      <div className="mt-12 flex flex-col gap-10 lg:gap-12">
         {/* Left — description panel, synced to whichever card is centered */}
-        <div className="lg:sticky lg:top-32">
-          <p className="font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-accent)] uppercase">
-            Now showing
-          </p>
+        <div className="lg:flex lg:items-start lg:justify-between lg:gap-12">
+          <div className="lg:sticky lg:top-32 lg:w-72 flex-shrink-0">
+            <p className="font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-accent)] uppercase">
+              Now showing
+            </p>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-              className="mt-3"
-            >
-              <h3 className="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
-                {project.title}
-              </h3>
-              <p className="mt-3 text-sm text-[var(--color-muted)]">
-                {project.description}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-[var(--color-line)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] text-[var(--color-muted)]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="mt-8 flex items-center gap-3">
-            <button
-              onClick={() => goTo((active - 1 + PROJECTS.length) % PROJECTS.length)}
-              aria-label="Previous project"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-line)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-            >
-              <TbArrowLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => goTo((active + 1) % PROJECTS.length)}
-              aria-label="Next project"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-line)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-            >
-              <TbArrowRight className="h-4 w-4" />
-            </button>
-            <span className="ml-1 font-[family-name:var(--font-mono)] text-xs text-[var(--color-muted)]">
-              {String(active + 1).padStart(2, "0")} / {String(PROJECTS.length).padStart(2, "0")}
-            </span>
-          </div>
-        </div>
-
-        {/* Right — snap-scroll slider. Native scroll-snap: smooth, touch-friendly, no per-frame JS. */}
-        <div
-          ref={trackRef}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocus={() => setIsPaused(true)}
-          onBlur={() => setIsPaused(false)}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {PROJECTS.map((p, i) => (
-            <div
-              key={p.title}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
-              className="group relative aspect-[4/3] w-[85%] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-[var(--color-surface)] transition-all duration-400 ease-out sm:w-[68%] lg:w-[82%]"
-              style={{ opacity: i === active ? 1 : 0.5, transform: i === active ? "scale(1)" : "scale(0.94)" }}
-            >
-              {p.example && (
-                <span className="absolute top-4 right-4 z-10 rounded-full border border-[var(--color-line)] bg-[var(--color-bg)]/90 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest text-[var(--color-muted)] uppercase">
-                  Example — concept
-                </span>
-              )}
-
-              {p.image ? (
-                <Image
-                  src={p.image}
-                  alt={p.title}
-                  fill
-                  sizes="(min-width: 1024px) 60vw, 85vw"
-                  className="object-cover grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center p-14 text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
-                  <ProjectArt variant={p.variant} />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                className="mt-3"
+              >
+                <h3 className="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
+                  {project.title}
+                </h3>
+                <p className="mt-3 text-sm text-[var(--color-muted)]">
+                  {project.description}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-[var(--color-line)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] text-[var(--color-muted)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-              )}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mt-8 flex items-center gap-3">
+              <button
+                onClick={() => goTo((active - 1 + PROJECTS.length) % PROJECTS.length)}
+                aria-label="Previous project"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-line)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              >
+                <TbArrowLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => goTo((active + 1) % PROJECTS.length)}
+                aria-label="Next project"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-line)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              >
+                <TbArrowRight className="h-4 w-4" />
+              </button>
+              <span className="ml-1 font-[family-name:var(--font-mono)] text-xs text-[var(--color-muted)]">
+                {String(active + 1).padStart(2, "0")} / {String(PROJECTS.length).padStart(2, "0")}
+              </span>
             </div>
-          ))}
+          </div>
+
+          {/* Right — snap-scroll slider. Native scroll-snap: smooth, touch-friendly, no per-frame JS. */}
+          <div
+            ref={trackRef}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onFocus={() => setIsPaused(true)}
+            onBlur={() => setIsPaused(false)}
+            className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-1"
+          >
+            {PROJECTS.map((p, i) => (
+              <div
+                key={p.title}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                className="group relative aspect-[4/3] w-[85%] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-[var(--color-surface)] transition-all duration-400 ease-out sm:w-[68%] lg:w-96"
+                style={{ opacity: i === active ? 1 : 0.5, transform: i === active ? "scale(1)" : "scale(0.94)" }}
+              >
+                {p.example && (
+                  <span className="absolute top-4 right-4 z-10 rounded-full border border-[var(--color-line)] bg-[var(--color-bg)]/90 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest text-[var(--color-muted)] uppercase">
+                    Example — concept
+                  </span>
+                )}
+
+                {p.image ? (
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    sizes="(min-width: 1024px) 30vw, 85vw"
+                    className="object-cover grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center p-14 text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
+                    <ProjectArt variant={p.variant} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

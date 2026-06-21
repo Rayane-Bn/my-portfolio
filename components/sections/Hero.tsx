@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Ticker } from "@/components/ui/Ticker";
+import { useState } from "react";
 
 export function Hero() {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <>
       <section
@@ -51,17 +54,40 @@ export function Hero() {
             y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 },
           }}
           whileHover={{ rotate: 0, scale: 1.03 }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className="relative mt-16 w-80 md:w-[32rem]"
           style={{ aspectRatio: "552 / 452" }}
         >
-          <Image
-            src="/images/rayane-cutout.png"
-            alt="Portrait of Rayane Benkradidja"
-            fill
-            priority
-            sizes="(min-width: 768px) 512px, 320px"
-            className="object-contain"
-          />
+          <motion.div
+            animate={{ opacity: isHovered ? 0 : 1 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src="/images/rayane-cutout.png"
+              alt="Portrait of Rayane Benkradidja"
+              fill
+              priority
+              sizes="(min-width: 768px) 512px, 320px"
+              className="object-contain"
+            />
+          </motion.div>
+
+          <motion.div
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0"
+          >
+            <Image
+              src="/images/rayane-colored.png"
+              alt="Portrait of Rayane Benkradidja - Colored"
+              fill
+              priority
+              sizes="(min-width: 768px) 512px, 320px"
+              className="object-contain"
+            />
+          </motion.div>
         </motion.div>
       </section>
 

@@ -90,7 +90,7 @@ function Row({ tools, reverse }: { tools: Tool[]; reverse?: boolean }) {
 export function Skills() {
   return (
     <section id="skills" className="py-28">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-6xl px-8">
         <p className="mb-3 font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-muted)] uppercase">
           02 — Skills
         </p>
