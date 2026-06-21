@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 const BIO_SECTIONS = [
@@ -25,35 +24,66 @@ const BIO_SECTIONS = [
   },
 ];
 
-export function About() {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-80px" });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 1, 0.5, 1],
-      },
-    },
-  };
+const StickyBioCard = ({
+  i,
+  section,
+  progress,
+  range,
+  targetScale,
+}: {
+  i: number;
+  section: (typeof BIO_SECTIONS)[0];
+  progress: any;
+  range: [number, number];
+  targetScale: number;
+}) => {
+  const scale = useTransform(progress, range, [1, targetScale]);
 
   return (
-    <section id="about" className="mx-auto max-w-6xl px-8 py-28">
+    <div className="sticky top-0 flex items-center justify-center h-screen">
+      <motion.div
+        style={{
+          scale,
+          top: `calc(-8vh + ${i * 30}px)`,
+        }}
+        className="relative -top-1/3 flex h-72 w-96 origin-top flex-col overflow-hidden rounded-2xl border border-[var(--color-line)] bg-[var(--color-surface)]/30 p-6 backdrop-blur-sm group"
+      >
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 via-transparent to-transparent" />
+        </div>
+
+        <div className="relative z-10 flex flex-col h-full">
+          <div className="mb-4 text-3xl">{section.icon}</div>
+          <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
+            {section.title}
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)] flex-1">
+            {section.content}
+          </p>
+        </div>
+
+        {/* Animated underline on hover */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[var(--color-accent)] to-transparent"
+          initial={{ width: "0%" }}
+          whileHover={{ width: "100%" }}
+          transition={{ duration: 0.3 }}
+        />
+      </motion.div>
+    </div>
+  );
+};
+
+export function About() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  return (
+    <section id="about" className="mx-auto max-w-6xl px-8">
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -75,44 +105,24 @@ export function About() {
         considered, not decorated.
       </motion.h2>
 
-      <motion.div
+      <div
         ref={containerRef}
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+        className="relative flex w-full flex-col items-center justify-center py-32"
       >
-        {BIO_SECTIONS.map((section, i) => (
-          <motion.div
-            key={section.title}
-            variants={itemVariants}
-            className="group relative overflow-hidden rounded-xl border border-[var(--color-line)] bg-[var(--color-surface)]/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-[var(--color-accent)] hover:bg-[var(--color-surface)]/60"
-          >
-            {/* Animated gradient background on hover */}
-            <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 via-transparent to-transparent" />
-            </div>
-
-            <div className="relative z-10">
-              <div className="mb-4 text-2xl">{section.icon}</div>
-              <h3 className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight">
-                {section.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--color-muted)]">
-                {section.content}
-              </p>
-            </div>
-
-            {/* Animated underline on hover */}
-            <motion.div
-              className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[var(--color-accent)] to-transparent"
-              initial={{ width: "0%" }}
-              whileHover={{ width: "100%" }}
-              transition={{ duration: 0.3 }}
+        {BIO_SECTIONS.map((section, i) => {
+          const targetScale = Math.max(0.5, 1 - (BIO_SECTIONS.length - i - 1) * 0.1);
+          return (
+            <StickyBioCard
+              key={section.title}
+              i={i}
+              section={section}
+              progress={scrollYProgress}
+              range={[i * 0.25, 1]}
+              targetScale={targetScale}
             />
-          </motion.div>
-        ))}
-      </motion.div>
+          );
+        })}
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
