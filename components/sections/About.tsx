@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const FACTS = [
   { label: "Based in", value: "Algiers, Algeria" },
   { label: "Studying at", value: "ESI — Algiers" },
-  { label: "Year", value: "3rd-year CS student" },
+  { label: "Year", value: "4th-year CS student-Software Engineering" },
   { label: "Past role", value: "Project Assistant Manager, Club Scientifique ESI" },
 ];
 
@@ -42,7 +42,7 @@ export function About() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
             className="mt-6 max-w-xl text-[var(--color-muted)]"
           >
-            Currently a 3rd-year Computer Science student at ESI — École
+            Currently a 4th-year Computer Science student option: software engineering at ESI — École
             nationale Supérieure d&apos;Informatique, Algiers, one of
             Algeria&apos;s leading computer science schools. Previously a
             project assistant manager for Club Scientifique de l&apos;ESI,

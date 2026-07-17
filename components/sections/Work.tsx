@@ -34,39 +34,62 @@ const PROJECTS: Project[] = [
   },
 ];
 
+const GAP_PX = 24; // matches gap-6
+
 export function Work() {
   const [active, setActive] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
+  const [offsetX, setOffsetX] = useState(0);
+
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Whichever card is most visible in the scroll track becomes "now
-  // showing" on the left — one observer, no scroll-position math.
+  // Recomputes the exact pixel offset needed to center the active
+  // card inside the viewport. Driven entirely by React state — no
+  // native scroll-snap, no IntersectionObserver guessing what's
+  // "visible enough." The active card is *always* exactly centered,
+  // by construction, on every render.
+  function recalcOffset(index: number) {
+    const viewport = viewportRef.current;
+    const card = cardRefs.current[index];
+    if (!viewport || !card) return;
+
+    let distance = 0;
+    for (let i = 0; i < index; i++) {
+      const el = cardRefs.current[i];
+      if (el) distance += el.offsetWidth + GAP_PX;
+    }
+
+    const centeringPad = (viewport.clientWidth - card.offsetWidth) / 2;
+    setOffsetX(-(distance - centeringPad));
+  }
+
+  function goTo(index: number) {
+    setActive(index);
+    recalcOffset(index);
+  }
+
+  // Recenter on resize (card widths are responsive %, so pixel offset
+  // changes whenever the viewport does).
   useEffect(() => {
-    const root = trackRef.current;
-    if (!root) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        const index = cardRefs.current.findIndex((el) => el === visible.target);
-        if (index !== -1) setActive(index);
-      },
-      { root, threshold: 0.6 },
-    );
-
-    cardRefs.current.forEach((el) => el && observer.observe(el));
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const observer = new ResizeObserver(() => recalcOffset(active));
+    observer.observe(viewport);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
+
+  // Center the first card once layout has actually happened.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => recalcOffset(0));
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Separate observer on the section itself — autoplay only runs while
-  // Work is actually on screen, so it can never fire (and scroll
-  // something) while someone's reading the Hero or About.
+  // Autoplay only runs while Work is on screen.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -78,20 +101,6 @@ export function Work() {
     return () => observer.disconnect();
   }, []);
 
-  // Scrolls the slider's own scroll container only — never the page.
-  // (scrollIntoView() was the bug: it walks every scrollable ancestor,
-  // including the document, so calling it from an off-screen autoplay
-  // tick was yanking the whole page down to this section.)
-  function goTo(index: number) {
-    const track = trackRef.current;
-    const card = cardRefs.current[index];
-    if (!track || !card) return;
-    const left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
-    track.scrollTo({ left, behavior: "smooth" });
-  }
-
-  // Auto-advance every 4.5s, loops both directions. Pauses on
-  // hover/focus, while off-screen, and for reduced-motion users.
   useEffect(() => {
     if (isPaused || !isSectionVisible) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -99,12 +108,13 @@ export function Work() {
     const id = setInterval(() => {
       setActive((current) => {
         const next = (current + 1) % PROJECTS.length;
-        goTo(next);
+        recalcOffset(next);
         return next;
       });
     }, 4500);
 
     return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaused, isSectionVisible]);
 
   const project = PROJECTS[active] ?? PROJECTS[0]!;
@@ -136,7 +146,7 @@ export function Work() {
       </motion.h2>
 
       <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(220px,1fr)_2fr] lg:items-start lg:gap-12">
-        {/* Left — description panel, synced to whichever card is centered */}
+        {/* Left — description panel, synced to the active card */}
         <div className="lg:sticky lg:top-32">
           <p className="font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-accent)] uppercase">
             Now showing
@@ -191,45 +201,58 @@ export function Work() {
           </div>
         </div>
 
-        {/* Right — snap-scroll slider. Native scroll-snap: smooth, touch-friendly, no per-frame JS. */}
+        {/* Right — translateX-driven carousel. No native scroll, no
+            scroll-snap, no IntersectionObserver: position is a pure
+            function of `active`, so it can never desync. */}
         <div
-          ref={trackRef}
+          ref={viewportRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
           onBlur={() => setIsPaused(false)}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="overflow-hidden"
         >
-          {PROJECTS.map((p, i) => (
-            <div
-              key={p.title}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
-              className="group relative aspect-[4/3] w-[85%] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-[var(--color-surface)] transition-all duration-400 ease-out sm:w-[68%] lg:w-[82%]"
-              style={{ opacity: i === active ? 1 : 0.5, transform: i === active ? "scale(1)" : "scale(0.94)" }}
-            >
-              {p.example && (
-                <span className="absolute top-4 right-4 z-10 rounded-full border border-[var(--color-line)] bg-[var(--color-bg)]/90 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest text-[var(--color-muted)] uppercase">
-                  Example — concept
-                </span>
-              )}
+          <motion.div
+            animate={{ x: offsetX }}
+            transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+            className="flex"
+            style={{ gap: GAP_PX }}
+          >
+            {PROJECTS.map((p, i) => (
+              <motion.div
+                key={p.title}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                animate={{
+                  opacity: i === active ? 1 : 0.5,
+                  scale: i === active ? 1 : 0.94,
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="group relative aspect-[4/3] w-[85%] flex-shrink-0 overflow-hidden rounded-2xl bg-[var(--color-surface)] sm:w-[68%] lg:w-[82%]"
+              >
+                {p.example && (
+                  <span className="absolute top-4 right-4 z-10 rounded-full border border-[var(--color-line)] bg-[var(--color-bg)]/90 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-widest text-[var(--color-muted)] uppercase">
+                    Example — concept
+                  </span>
+                )}
 
-              {p.image ? (
-                <Image
-                  src={p.image}
-                  alt={p.title}
-                  fill
-                  sizes="(min-width: 1024px) 60vw, 85vw"
-                  className="object-cover grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center p-14 text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
-                  <ProjectArt variant={p.variant} />
-                </div>
-              )}
-            </div>
-          ))}
+                {p.image ? (
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    sizes="(min-width: 1024px) 60vw, 85vw"
+                    className="object-cover grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center p-14 text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
+                    <ProjectArt variant={p.variant} />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
