@@ -1,3 +1,5 @@
+export type ProjectVariant = "schema" | "boutique" | "landing";
+
 export type Project = {
   slug: string;
   title: string;
