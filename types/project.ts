@@ -1,12 +1,12 @@
-export type ProjectVariant = "schema" | "boutique" | "landing";
-
 export type Project = {
+  slug: string;
   title: string;
-  description: string;
+  subtitle: string;
+  about: string;
+  features: string[];
   tags: string[];
-  variant: ProjectVariant;
-  /** Real screenshot, once available — falls back to abstract line art when absent. */
-  image?: string;
-  href?: string;
-  example?: boolean;
+  coverImage: string;
+  images?: string[];
+  liveUrl?: string;
+  sourceUrl?: string;
 };

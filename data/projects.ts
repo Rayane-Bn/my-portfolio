@@ -1,0 +1,163 @@
+import type { Project } from "@/types/project";
+
+export const PROJECTS: Project[] = [
+  {
+    slug: "esi-flow",
+    title: "ESI Flow",
+    subtitle: "Web app for managing technical issues in academic environments.",
+    about:
+      "ESI Flow simplifies how technical issues are reported and managed at ESI, enabling efficient communication between users, technicians, and administrators.",
+    features: [
+      "Report technical issues easily",
+      "Track and manage interventions",
+      "Role-based access (Admin, Technician, User)",
+      "Instant notifications and updates",
+      "Dashboard for quick insights",
+      "Multi-language ready",
+    ],
+    tags: ["Next.js", "Tailwind CSS", "Express", "PostgreSQL"],
+    coverImage: "/esiflow/esiflow.png",
+    images: [
+      "/esiflow/esiflow.png",
+      "/esiflow/Screenshot%202026-04-19%20140806.png",
+      "/esiflow/Screenshot%202026-04-20%20075522.png",
+      "/esiflow/Screenshot%202026-04-20%20075537.png",
+      "/esiflow/Screenshot%202026-04-20%20075606.png",
+      "/esiflow/Screenshot%202026-04-20%20075618.png",
+      "/esiflow/Screenshot%202026-04-20%20075631.png",
+      "/esiflow/Screenshot%202026-04-20%20081035.png",
+    ],
+    liveUrl: "https://esi-flow.vercel.app/",
+    sourceUrl: "https://github.com/Rayane-Bn/esi_flow_front",
+  },
+  {
+    slug: "organizers-app",
+    title: "Organizers App",
+    subtitle: "Event and organizer workflow interface with dashboard screens.",
+    about:
+      "Organizers App is a workflow-oriented UI for managing event operations, participants, and schedules from a single control panel.",
+    features: [
+      "Operations dashboard",
+      "Organizer workflow",
+      "Event-oriented views",
+    ],
+    tags: ["Next.js", "Tailwind CSS"],
+    coverImage: "/orgnizerApp/1771597244675.jpg",
+    images: [
+      "/orgnizerApp/1771597244675.jpg",
+      "/orgnizerApp/Screenshot_20260717_235706_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235711_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235720_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235732_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235749_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235846_Chrome.jpeg",
+      "/orgnizerApp/Screenshot_20260717_235934_Chrome.jpeg",
+    ],
+    liveUrl: "https://organizer-app.cse.club/",
+  },
+  {
+    slug: "datahack-v3",
+    title: "DataHack v3",
+    subtitle: "A refreshed DataHack event experience with updated visuals.",
+    about:
+      "DataHack v3 iterates on the event website with improved layout structure and richer content presentation.",
+    features: [
+      "Updated visual identity",
+      "Improved content hierarchy",
+      "Reusable sections",
+    ],
+    tags: ["Next.js", "Tailwind CSS", "Express", "MongoDB"],
+    coverImage: "/DH3/Copilot_20260420_143810.png",
+    images: [
+      "/DH3/Copilot_20260420_143810.png",
+      "/DH3/image.png",
+      "/DH3/Screenshot%202026-04-20%20144127.png",
+      "/DH3/Screenshot%202026-04-20%20144524.png",
+    ],
+    liveUrl: "https://datahack-3.0.cse.club/",
+  },
+  {
+    slug: "datahack-v2",
+    title: "DataHack v2",
+    subtitle: "CSE Club website supporting DataHack event registration.",
+    about:
+      "DataHack v2 supports registration, event communication, and participant onboarding with a clean landing and flow-focused UX.",
+    features: [
+      "Registration flow",
+      "Event-focused UI",
+      "Mobile-friendly layout",
+    ],
+    tags: ["Next.js", "Tailwind CSS", "Express", "MongoDB"],
+    coverImage: "/DHv2/datahack.png",
+    images: [
+      "/DHv2/datahack.png",
+      "/DHv2/Screenshot%202026-04-20%20141533.png",
+    ],
+    liveUrl: "https://datahack-2k25.cse.club/",
+  },
+  {
+    slug: "formus",
+    title: "Forums Platform",
+    subtitle: "Community discussion interface with forum-style pages.",
+    about:
+      "Forums Platform explores a discussion-focused product with categorized conversations and post-centric interactions.",
+    features: [
+      "Forum categories",
+      "Discussion UI",
+      "Thread-style layouts",
+    ],
+    tags: ["Next.js", "Tailwind CSS"],
+    coverImage: "/formus/Screenshot%202026-04-20%20164929.png",
+    images: [
+      "/formus/Screenshot%202026-04-20%20164929.png",
+      "/formus/Screenshot%202026-04-20%20164853.png",
+      "/formus/Screenshot%202026-04-20%20164938.png",
+      "/formus/Screenshot%202026-04-20%20164949.png",
+      "/formus/Screenshot%202026-04-20%20165300.png",
+    ],
+    liveUrl: "https://cse-forums.cse.club/",
+  },
+  {
+    slug: "caa3",
+    title: "CAA3",
+    subtitle: "Experimental project interface with custom visual direction.",
+    about:
+      "CAA3 presents an exploratory direction with visual experiments and component-driven pages.",
+    features: [
+      "Experimental visuals",
+      "Component composition",
+      "Iterative interface design",
+    ],
+    tags: ["Next.js", "Tailwind CSS"],
+    coverImage: "/CAA3/Gemini_Generated_Image_6ncykr6ncykr6ncy.png",
+    images: [
+      "/CAA3/Gemini_Generated_Image_6ncykr6ncykr6ncy.png",
+      "/CAA3/Screenshot%202026-04-20%20153456.png",
+      "/CAA3/Screenshot%202026-04-20%20153529.png",
+      "/CAA3/Screenshot%202026-04-20%20155507.png",
+      "/CAA3/Screenshot%202026-04-20%20155519.png",
+    ],
+    liveUrl: "https://caa-2025.cse.club/",
+  },
+  {
+    slug: "refactoring-swarm",
+    title: "Refactoring Swarm",
+    subtitle: "Multi-agent Python system with 3 specialized AI agents.",
+    about:
+      "Refactoring Swarm uses three agents — AuditorAgent, FixerAgent, and JUDGE — to analyze faulty Python code, produce improved code, and score the result. Includes logging, rate limiting, unit tests, and a sandboxed evaluation pipeline.",
+    features: [
+      "Three-agent architecture: Auditor, Fixer, Judge",
+      "Python-based refactoring workflow",
+      "Pandas-powered analysis and evaluation",
+      "Gemini API integration",
+      "LangChain multi-agent orchestration",
+      "Logging and rate limiting",
+      "Unit tests and sandboxed evaluation",
+      "Goodness score for generated solutions",
+    ],
+    tags: ["Python", "Pandas", "Gemini API", "LangChain", "pytest"],
+    coverImage: "/refactoring/4cdb712b-6749-447c-b2fa-09490bacb9da.png",
+    images: ["/refactoring/4cdb712b-6749-447c-b2fa-09490bacb9da.png"],
+    sourceUrl: "https://github.com/Rayane-Bn/Refactoring-Swarm-Equipe-04",
+  },
+];

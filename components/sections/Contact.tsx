@@ -1,132 +1,113 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
+import {
+  TbBrandGithub,
+  TbBrandLinkedin,
+  TbBrandInstagram,
+  TbBrandWhatsapp,
+  TbMail,
+  TbArrowUpRight,
+} from "react-icons/tb";
 
-type Status = "idle" | "sending" | "sent" | "error";
+const GMAIL =
+  "https://mail.google.com/mail/u/0/?fs=1&to=nr_benkradidja@esi.dz&su=Hello+from+your+portfolio&body=Hello+Rayane,%0AI+came+across+your+portfolio.%0A%0A%5BYour+message+here%5D&tf=cm";
+
+const SOCIALS = [
+  {
+    label: "GitHub",
+    href: "https://github.com/Rayane-Bn",
+    icon: TbBrandGithub,
+  },
+  {
+    label: "Email",
+    href: GMAIL,
+    icon: TbMail,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/benkradidja-rayane-93a6132b6/",
+    icon: TbBrandLinkedin,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/rayane_dz_05/",
+    icon: TbBrandInstagram,
+  },
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/213657176064",
+    icon: TbBrandWhatsapp,
+  },
+];
 
 export function Contact() {
-  const [status, setStatus] = useState<Status>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("sending");
-    setErrorMessage("");
-
-    const form = event.currentTarget;
-    const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
-    };
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Something went wrong.");
-      }
-
-      setStatus("sent");
-      form.reset();
-    } catch (err) {
-      setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
-    }
-  }
-
   return (
-    <section id="contact" className="mx-auto max-w-3xl px-6 py-28">
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5 }}
-        className="mb-3 font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-muted)] uppercase"
-      >
-        05 — Contact
-      </motion.p>
-
-      <motion.h2
-        initial={{ opacity: 0, y: 16 }}
+    <section id="contact" className="mx-auto max-w-6xl px-6 py-28">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-        className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight md:text-4xl"
+        className="relative overflow-hidden rounded-3xl px-10 py-16 md:px-16 border border-[var(--color-line)] bg-[var(--color-surface)]"
       >
-        Let&apos;s talk
-      </motion.h2>
+        {/* Faint dot grid inside the card */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(var(--color-bg) 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
 
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
-        className="mt-10 flex flex-col gap-5"
-      >
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="name" className="text-sm text-[var(--color-muted)]">
-            Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            className="rounded-lg border border-[var(--color-line)] bg-transparent px-4 py-3 text-sm transition-colors focus:border-[var(--color-accent)] focus:outline-none"
-          />
+        <p className="font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-muted)] uppercase">
+          05 — Contact
+        </p>
+
+        <h2 className="mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl font-bold leading-tight tracking-tight  md:text-5xl">
+          Have an awesome project idea?{" "}
+          <span className="text-[var(--color-accent)]">Let&apos;s discuss</span>
+        </h2>
+
+        <p className="mt-5 max-w-md text-[var(--color-muted)]">
+          Ready to bring your vision to life? Reach out and let&apos;s explore
+          what we can build together.
+        </p>
+
+        <div className="mt-10 flex flex-wrap items-center gap-6">
+          {/* Primary CTA */}
+          <a
+            href={GMAIL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-85"
+          >
+            <TbMail className="h-4 w-4" />
+            Send Email
+            <TbArrowUpRight className="h-4 w-4" />
+          </a>
+
+          {/* Social icons */}
+          <div className="flex items-center gap-4">
+            <span className="font-[family-name:var(--font-mono)] text-xs tracking-widest text-[var(--color-muted)] uppercase">
+              Connect
+            </span>
+            {SOCIALS.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-[var(--color-muted)] transition-all duration-300 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
         </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="text-sm text-[var(--color-muted)]">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="rounded-lg border border-[var(--color-line)] bg-transparent px-4 py-3 text-sm transition-colors focus:border-[var(--color-accent)] focus:outline-none"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="message" className="text-sm text-[var(--color-muted)]">
-            Message
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            rows={5}
-            required
-            className="rounded-lg border border-[var(--color-line)] bg-transparent px-4 py-3 text-sm transition-colors focus:border-[var(--color-accent)] focus:outline-none"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="mt-2 rounded-full bg-[var(--color-ink)] px-6 py-3 text-sm font-medium text-[var(--color-bg)] transition-opacity hover:opacity-85 disabled:opacity-50"
-        >
-          {status === "sending" ? "Sending…" : "Send message"}
-        </button>
-
-        {status === "sent" && (
-          <p className="text-sm text-[var(--color-accent)]">
-            Sent — thanks, I&apos;ll reply soon.
-          </p>
-        )}
-        {status === "error" && (
-          <p className="text-sm text-[var(--color-muted)]">{errorMessage}</p>
-        )}
-      </motion.form>
+      </motion.div>
     </section>
   );
 }
